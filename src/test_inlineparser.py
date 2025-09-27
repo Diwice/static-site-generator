@@ -1,6 +1,6 @@
 import unittest
 from textnode import *
-from splitdelimeter import *
+from inlineparser import *
 
 class TestSplitDelimeter(unittest.TestCase) :
 	def test_wrong_type_node(self) :
@@ -49,6 +49,36 @@ class TestSplitDelimeter(unittest.TestCase) :
 		self.assertEqual(new_nodes[2].to_html(), " node")
 		self.assertEqual(new_nodes[3].to_html(), "And this is a second node of ")
 		self.assertEqual(new_nodes[4].to_html(), "<code>code</code>")
+
+	def test_empty_link_markdown(self) :
+		node = TextNode("This node does not contain image nor link", TextType.TEXT)
+		parsed_node = extract_markdown_links(node)
+		self.assertEqual(parsed_node, None)
+
+	def test_empty_image_markdown(self) :
+		node = TextNode("This node does not contain images", TextType.TEXT)
+		parsed_node = extract_markdown_images(node)
+		self.assertEqual(parsed_node, None)
+
+	def test_extract_link_markdown(self) :
+		node = TextNode("This is a link [to google](https://google.com/)", TextType.TEXT)
+		parsed_node = extract_markdown_links(node)
+		self.assertEqual(parsed_node, [("to google", "https://google.com/")])
+
+	def test_extract_image_markdown(self) :
+		node = TextNode("This is an image ![haha funny rabbit](https://9p.io/plan9/img/plan9bunnywhite.jpg)", TextType.TEXT)
+		parsed_node = extract_markdown_images(node)
+		self.assertEqual(parsed_node, [("haha funny rabbit", "https://9p.io/plan9/img/plan9bunnywhite.jpg")])
+
+	def test_multiple_link_extract(self) :
+		node = TextNode("This is a link to youtube [to youtube](https://youtube.com/) and this is a link to google [to google](https://google.com/)", TextType.TEXT)
+		parsed_node = extract_markdown_links(node)
+		self.assertEqual(parsed_node, [("to youtube", "https://youtube.com/"), ("to google", "https://google.com/")])
+
+	def test_mixed_image_extract(self) :
+		node = TextNode("This is Glenda ![Glenda](https://9p.io/plan9/img/plan9bunnywhite.jpg) and this is a link to plan9 [Plan9](https://9p.io/plan9/)", TextType.TEXT)
+		parsed_node = extract_markdown_images(node)
+		self.assertEqual(parsed_node, [("Glenda", "https://9p.io/plan9/img/plan9bunnywhite.jpg")])
 
 if __name__ == "__main__" :
 	unittest.main()
