@@ -14,7 +14,7 @@ def split_nodes_delimeter(old_nodes, delimeter, text_type) :
 			raise Exception(f"Invalid Markdown Syntax : missing or not closed delimeter / text - '{node.text}' / delimeter - '{delimeter}'")
 
 		split_text = node.text.split(delimeter)
-		new_nodes.extend([LeafNode(tag=text_type.value, value=i) if split_text.index(i) % 2 != 0 else LeafNode(value=i) for i in split_text if i])
+		new_nodes.extend([TextNode(i, text_type) if split_text.index(i) % 2 != 0 else TextNode(i, TextType.TEXT) for i in split_text if i])
 
 	return new_nodes
 
@@ -69,3 +69,10 @@ def split_nodes_link(old_nodes) :
 		new_nodes.extend(sub_nodes)
 
 	return new_nodes
+
+def text_to_textnodes(text) :
+	res_nodes = []
+
+	#res_nodes.append(
+
+	return res_nodes
