@@ -99,5 +99,10 @@ class TestSplitDelimeter(unittest.TestCase) :
 		new_node = split_nodes_link([node])
 		self.assertListEqual(new_node, [node])
 
+	def test_final_conversion(self) :
+		text = "This **node** _contains_ `every` [possible](https://google.com/) ![texttype](https://9p.io/plan9/img/plan9bunnywhite.jpg)"
+		new_nodes = text_to_textnodes(text)
+		self.assertListEqual(new_nodes, [TextNode("This ", TextType.TEXT), TextNode("node", TextType.BOLD), TextNode(" ", TextType.TEXT), TextNode("contains", TextType.ITALIC), TextNode(" ", TextType.TEXT), TextNode("every", TextType.CODE), TextNode(" ", TextType.TEXT), TextNode("possible", TextType.LINK, "https://google.com/"), TextNode(" ", TextType.TEXT), TextNode("texttype", TextType.IMAGE, "https://9p.io/plan9/img/plan9bunnywhite.jpg")])
+
 if __name__ == "__main__" :
 	unittest.main()
