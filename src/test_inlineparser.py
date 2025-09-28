@@ -2,7 +2,7 @@ import unittest
 from textnode import *
 from inlineparser import *
 
-class TestSplitDelimeter(unittest.TestCase) :
+class TestInlineParser(unittest.TestCase) :
 	def test_wrong_type_node(self) :
 		node = TextNode("This is a `code` node", TextType.CODE)
 		new_node = split_nodes_delimeter([node], "`", TextType.CODE)
