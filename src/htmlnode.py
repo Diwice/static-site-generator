@@ -8,10 +8,25 @@ class HTMLNode :
 		self.props = props
 
 	def to_html(self) :
-		raise NotImplementedError("Currently not implemented")
+		if not(self.tag) and not(self.value) :
+			raise Exception("Must have both tag and value to build html")
+
+		if not(self.tag) and self.value :
+			return self.value
+
+		opening = f"<{self.tag}{self.props_to_html() and ' '+self.props_to_html()}>"
+
+		if self.children :
+			inner = "".join([child.to_html() for child in self.children]) + f"</{self.tag}>"
+		elif self.value :
+			inner = value + f"</{self.tag}>"
+		else :
+			inner = f"</{self.tag}>"
+
+		return opening + inner
 
 	def props_to_html(self) :
-		return " ".join([str(i)+f'="{str(self.props[i])}"' for i in self.props])
+		return " ".join([str(i)+f'="{str(self.props[i])}"' for i in self.props]) if self.props else ""
 
 	def __eq__(self, other) :
 		return True if self.tag == other.tag and self.value == other.value and self.children == other.children and self.props == other.props else False

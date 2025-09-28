@@ -1,6 +1,5 @@
 import re
 from textnode import *
-from htmlnode import LeafNode
 
 def split_nodes_delimeter(old_nodes, delimeter, text_type) :
 	new_nodes = []
