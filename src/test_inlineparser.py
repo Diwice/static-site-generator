@@ -31,7 +31,7 @@ class TestSplitDelimeter(unittest.TestCase) :
 		self.assertEqual(new_node[2].to_html(), " and ")
 		self.assertEqual(new_node[3].to_html(), "<code>second code</code>")
 		self.assertEqual(new_node[4].to_html(), " nodes")
-	
+
 	def test_different_delimeters(self) :
 		node = TextNode("This node contains `code` and _italic_ nodes", TextType.TEXT)
 		new_node = split_nodes_delimeter([node], "_", TextType.ITALIC)
@@ -79,6 +79,41 @@ class TestSplitDelimeter(unittest.TestCase) :
 		node = TextNode("This is Glenda ![Glenda](https://9p.io/plan9/img/plan9bunnywhite.jpg) and this is a link to plan9 [Plan9](https://9p.io/plan9/)", TextType.TEXT)
 		parsed_node = extract_markdown_images(node)
 		self.assertEqual(parsed_node, [("Glenda", "https://9p.io/plan9/img/plan9bunnywhite.jpg")])
+
+	def test_link_nodes_creation(self) :
+		node = TextNode("This node contains a [google](https://google.com/) link", TextType.TEXT)
+		new_nodes = split_nodes_link([node])
+		self.assertListEqual(new_nodes, [TextNode("This node contains a ", TextType.TEXT), TextNode("google", TextType.LINK, "https://google.com/"), TextNode(" link", TextType.TEXT)])
+
+	def test_image_nodes_creation(self) :
+		node = TextNode("This node contains an ![Glenda](https://9p.io/plan9/img/plan9bunnywhite.jpg) image", TextType.TEXT)
+		new_nodes = split_nodes_image([node])
+		self.assertListEqual(new_nodes, [TextNode("This node contains an ", TextType.TEXT), TextNode("Glenda", TextType.IMAGE, "https://9p.io/plan9/img/plan9bunnywhite.jpg"), TextNode(" image", TextType.TEXT)])
+
+	def test_multiple_image_nodes(self) :
+		nodes = [TextNode("This node contains first image ![Glenda](https://9p.io/plan9/img/plan9bunnywhite.jpg)", TextType.TEXT), TextNode("This node contains second image ![Glenda](https://9p.io/plan9/img/plan9bunnywhite.jpg)", TextType.TEXT)]
+		new_nodes = split_nodes_image(nodes)
+		self.assertListEqual(new_nodes, [TextNode("This node contains first image ", TextType.TEXT), TextNode("Glenda", TextType.IMAGE, "https://9p.io/plan9/img/plan9bunnywhite.jpg"), TextNode("This node contains second image ", TextType.TEXT), TextNode("Glenda", TextType.IMAGE, "https://9p.io/plan9/img/plan9bunnywhite.jpg")])
+
+	def test_split_images(self):
+		node = TextNode("This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)", TextType.TEXT)
+		new_nodes = split_nodes_image([node])
+		self.assertListEqual([TextNode("This is text with an ", TextType.TEXT), TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"), TextNode(" and another ", TextType.TEXT), TextNode("second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png")],new_nodes)
+
+	def test_multiple_links_single_node(self) :
+		node = TextNode("This node contains multiple links : [google](https://google.com/) and [youtube](https://youtube.com/)", TextType.TEXT)
+		new_nodes = split_nodes_link([node])
+		self.assertListEqual(new_nodes, [TextNode("This node contains multiple links : ", TextType.TEXT), TextNode("google", TextType.LINK, "https://google.com/"), TextNode(" and ", TextType.TEXT), TextNode("youtube", TextType.LINK, "https://youtube.com/")])
+
+	def test_single_link_multiple_nodes(self) :
+		nodes = [TextNode("This node contains a link [google](https://google.com/)", TextType.TEXT), TextNode("This node does not contain a link", TextType.TEXT)]
+		new_nodes = split_nodes_link(nodes)
+		self.assertListEqual(new_nodes, [TextNode("This node contains a link ", TextType.TEXT), TextNode("google", TextType.LINK, "https://google.com/"), TextNode("This node does not contain a link", TextType.TEXT)])
+
+	def test_image_absent_node(self) :
+		node = TextNode("This node does not contain a link", TextType.TEXT)
+		new_node = split_nodes_link([node])
+		self.assertListEqual(new_node, [node])
 
 if __name__ == "__main__" :
 	unittest.main()
