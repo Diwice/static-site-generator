@@ -2,8 +2,8 @@ import os
 import shutil
 
 def copy_static(sub_dir=None) :
-    full_path = os.path.abspath("../static") if not(sub_dir) else sub_dir
-    copy_path = os.path.abspath("../public")
+    full_path = os.path.abspath("./static") if not(sub_dir) else sub_dir
+    copy_path = os.path.abspath("./public")
 
     if not(os.path.exists(full_path)) :
         return False
@@ -30,5 +30,5 @@ def copy_static(sub_dir=None) :
         build_file_path = None if len(s_file_path) < 3 else "/".join(s_file_path[1:-1])
         shutil.copy(file, copy_path if not(build_file_path) else os.path.join(copy_path, build_file_path))
 
-    not(sub_dir) and shutil.rmtree(full_path)
+    # whoops not(sub_dir) and shutil.rmtree(full_path)
     return True

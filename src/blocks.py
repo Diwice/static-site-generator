@@ -105,9 +105,9 @@ def markdown_to_html_node(markdown) :
 			children = []
 			for split in splitted_block :
 				if split.startswith("- ") :
-					text = ln[2:]
+					text = split[2:]
 				elif split.startswith("* ") :
-					text = ln[2:]
+					text = split[2:]
 				else:
 					continue
 
@@ -130,7 +130,7 @@ def markdown_to_html_node(markdown) :
 			for split in splitted_block :
 				match = re.match(r"^\d+\.\s", split)
 				if match :
-					text = split[match.end:]
+					text = split[match.end():]
 				else :
 					continue
 
@@ -151,7 +151,7 @@ def markdown_to_html_node(markdown) :
 
 			cleaned = []
 			for i in splitted_block :
-				sub = i.lstip()
+				sub = i.lstrip()
 
 				if sub.startswith(">") :
 					sub = sub[1:]
