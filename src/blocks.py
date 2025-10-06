@@ -180,3 +180,12 @@ def markdown_to_html_node(markdown) :
 		main_node.children.append(p_node)
 
 	return main_node
+
+def extract_title(markdown) : # honestly idk where should I put this function so I left it here
+    blocks = markdown_to_blocks(markdown)
+
+    for block in blocks :
+        if block.startswith("# ") :
+            return block.lstrip("# ")
+
+    raise Exception("Passed Markdown does not have an h1 header")
