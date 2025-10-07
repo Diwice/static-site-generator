@@ -3,7 +3,7 @@ import shutil
 
 def copy_static(sub_dir=None) :
     full_path = os.path.abspath("./static") if not(sub_dir) else sub_dir
-    copy_path = os.path.abspath("./public")
+    copy_path = os.path.abspath("./docs")
 
     if not(os.path.exists(full_path)) :
         return False
